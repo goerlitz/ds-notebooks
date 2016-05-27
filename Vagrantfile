@@ -3,8 +3,9 @@
 
 VAGRANTFILE_API_VERSION = "2"
 
-# R package install script
-$installRpkg = <<SCRIPT
+# install script for additional R packages and PDF export
+$installExtras = <<SCRIPT
+#apt-get update && apt-get install -y inkscape
 docker exec -u root jupyter R -e "install.packages(c('data.table', 'dplyr', 'gridExtra', 'corrplot'), repos='http://cran.fhcrc.org')"
 SCRIPT
 
@@ -30,13 +31,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     docker.pull_images "jupyter/all-spark-notebook"
 
     # start container for jupyter
+    # mounting: current dir -> /vagrant -> /home/jovyan/work
     docker.run "jupyter/all-spark-notebook",
       args: "-d -p 8888:8888 --name jupyter -v /vagrant:/home/jovyan/work"
 
   end
 
   # install missing R packages in running jupyter container
-  config.vm.provision "shell", inline: $installRpkg
-
+  config.vm.provision "shell", inline: $installExtras
 
 end
+
