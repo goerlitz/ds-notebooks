@@ -5,6 +5,9 @@
 # Session Data files
 .RData
 
+.vagrant
+jupyter/.ipynb_checkpoints
+
 # Example code in package build process
 *-Ex.R
 
